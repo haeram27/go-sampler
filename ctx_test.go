@@ -19,18 +19,18 @@ func TestValueContext(t *testing.T) {
 	t.Log(paretCtx.Value("key3")) // <nil>
 }
 
-func BlockingFn(ctx context.Context, name string, printCh <-chan int) {
+func BlockingFn(ctx context.Context, printCh <-chan int, caller string) {
 	for {
 		select {
 		case <-ctx.Done(): // receive context Done channel by invoking CancelFunc()
-			fmt.Printf("%s :: (P)%s: ctx.Done() is called\n", name, ctx.Value("parentFn"))
+			fmt.Printf("%s :: (P)%s: ctx.Done() is called\n", caller, ctx.Value("parentFn"))
 			if err := ctx.Err(); err != nil {
-				fmt.Printf("%s :: err: %s\n", name, err)
+				fmt.Printf("%s :: err: %s\n", caller, err)
 			}
-			fmt.Printf("%s :: finished\n", name)
+			fmt.Printf("%s :: finished\n", caller)
 			return // terminate go-routine
 		case num := <-printCh:
-			fmt.Printf("%s :: %d\n", name, num)
+			fmt.Printf("%s :: %d\n", caller, num)
 		}
 	}
 }
@@ -41,7 +41,7 @@ func TestCancelContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, "BlockingFn1", printCh) // run go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn1") // run go-routine
 
 	for num := 1; num <= 3; num++ {
 		printCh <- num
@@ -59,9 +59,9 @@ func TestCancelContextM(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, "BlockingFn1", printCh) // run go-routine
-	go BlockingFn(ctx, "BlockingFn2", printCh) // run go-routine
-	go BlockingFn(ctx, "BlockingFn3", printCh) // run go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn1") // run go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn2") // run go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn3") // run go-routine
 
 	for num := 1; num <= 3; num++ {
 		printCh <- num
@@ -135,7 +135,7 @@ func TestDeadlineContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, "BlockingFn1", printCh) // go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn1") // go-routine
 
 	for num := 1; num <= 3; num++ {
 		select {
@@ -160,7 +160,7 @@ func TestTimeoutContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, "BlockingFn1", printCh) // go-routine
+	go BlockingFn(ctx, printCh, "BlockingFn1") // go-routine
 
 	for num := 1; num <= 3; num++ {
 		select {
