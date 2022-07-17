@@ -23,6 +23,8 @@ func BlockingFn(ctx context.Context, startCh <-chan bool, caller string) {
 				fmt.Printf("%s is blocking...\n", caller)
 				time.Sleep(1 * time.Second)
 			}
+		default: // check select in every second than nano time in case there is no channel event
+			time.Sleep(1 * time.Second)
 		}
 	}
 }

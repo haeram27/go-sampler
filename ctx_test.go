@@ -29,8 +29,12 @@ func BlockingFn(ctx context.Context, printCh <-chan int, caller string) {
 			}
 			fmt.Printf("%s :: finished\n", caller)
 			return // terminate go-routine
+
 		case num := <-printCh:
 			fmt.Printf("%s :: %d\n", caller, num)
+
+		default: // check select in every second than nano time in case there is no channel event
+			time.Sleep(1 * time.Second)
 		}
 	}
 }
@@ -89,6 +93,9 @@ func BlockingFnD(parent context.Context, child context.Context) {
 				fmt.Printf("BlockingFnD:: child err: %s\n", err)
 			}
 			time.Sleep(1 * time.Second)
+
+		default: // check select in every second than nano time in case there is no channel event
+			time.Sleep(1 * time.Second)
 		}
 	}
 }
@@ -145,6 +152,7 @@ func TestDeadlineContext(t *testing.T) {
 			fmt.Println("TestDealineContext::  ctx.Done() is called")
 			break
 		}
+
 	}
 
 	fmt.Println("TestDealineContext:: finished")
