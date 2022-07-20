@@ -1,4 +1,4 @@
-package cancel_blockfn_test
+package test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func BlockingFn(ctx context.Context, startCh <-chan bool, caller string) {
+func BlockingFnB(ctx context.Context, startCh <-chan bool, caller string) {
 	for {
 		select {
 		case <-ctx.Done(): // receive context Done channel by invoking CancelFunc()
@@ -33,7 +33,7 @@ func TestCancelBlockingFn(t *testing.T) {
 	baseCtx := context.WithValue(context.Background(), "parentFn", "TestCancelBlockingFn")
 	ctx, cancelCtx := context.WithCancel(baseCtx)
 	startCh := make(chan bool)
-	go BlockingFn(ctx, startCh, "BlockingFn1") // run go-routine
+	go BlockingFnB(ctx, startCh, "BlockingFn1") // run go-routine
 	startCh <- true
 
 	time.Sleep(3 * time.Second)

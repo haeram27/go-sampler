@@ -1,4 +1,4 @@
-package reflect_test
+package test
 
 import (
 	"fmt"
@@ -23,9 +23,9 @@ func TestCheckTypeOfVariable(t *testing.T) {
 		fmt.Println("Equal") // Equal
 	}
 
-	var itfs interface{}
-	itfs = varString
-	switch t := itfs.(type) {
+	var itf interface{}
+	itf = varString
+	switch t := itf.(type) {
 	case string:
 		fmt.Println("string") // string
 	default:

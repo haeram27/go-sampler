@@ -1,4 +1,4 @@
-package select_default_test
+package test
 
 import (
 	"fmt"

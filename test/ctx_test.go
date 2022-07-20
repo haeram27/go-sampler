@@ -1,4 +1,4 @@
-package ctx_test
+package test
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func TestValueContext(t *testing.T) {
 	t.Log(paretCtx.Value("key3")) // <nil>
 }
 
-func BlockingFn(ctx context.Context, printCh <-chan int, caller string) {
+func BlockingFnA(ctx context.Context, printCh <-chan int, caller string) {
 	for {
 		select {
 		case <-ctx.Done(): // receive context Done channel by invoking CancelFunc()
@@ -45,7 +45,7 @@ func TestCancelContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, printCh, "BlockingFn1") // run go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFn1") // run go-routine
 
 	for num := 1; num <= 3; num++ {
 		printCh <- num
