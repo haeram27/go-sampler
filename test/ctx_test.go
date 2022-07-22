@@ -63,9 +63,9 @@ func TestCancelContextM(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, printCh, "BlockingFn1") // run go-routine
-	go BlockingFn(ctx, printCh, "BlockingFn2") // run go-routine
-	go BlockingFn(ctx, printCh, "BlockingFn3") // run go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFn1") // run go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFn2") // run go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFn3") // run go-routine
 
 	for num := 1; num <= 3; num++ {
 		printCh <- num
@@ -142,7 +142,7 @@ func TestDeadlineContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, printCh, "BlockingFn1") // go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFnA") // go-routine
 
 	for num := 1; num <= 3; num++ {
 		select {
@@ -168,7 +168,7 @@ func TestTimeoutContext(t *testing.T) {
 
 	printCh := make(chan int)
 
-	go BlockingFn(ctx, printCh, "BlockingFn1") // go-routine
+	go BlockingFnA(ctx, printCh, "BlockingFnA") // go-routine
 
 	for num := 1; num <= 3; num++ {
 		select {

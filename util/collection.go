@@ -1,6 +1,7 @@
 package util
 
-// O(n)
+// slice substraction: O(n)
+// remove v elements from slice
 func RemoveFromSlice[T comparable](l []T, v T) []T {
 	for i, e := range l {
 		if e == v {
@@ -11,7 +12,8 @@ func RemoveFromSlice[T comparable](l []T, v T) []T {
 	return l
 }
 
-// O(1) return a - b
+// slice substraction:  O(1)
+// remove elements of slice b from slice a return a - b
 func DiffStrSlice(a, b []string) []string {
 	mb := make(map[string]struct{}, len(b))
 	for _, v := range b {

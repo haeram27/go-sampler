@@ -9,14 +9,14 @@ import (
 	"strings"
 )
 
-// "not used" 오류 회피
+// avoid "not used" error
 func UNUSED(vals ...interface{}) {
 	for _, val := range vals {
 		_ = val
 	}
 }
 
-// 값을 가져올때 NULL 검사하여 가져옴
+// check nil when resolve data from empty interface
 func GetNC(m interface{}) interface{} {
 	if m == nil {
 		return ""
