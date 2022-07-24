@@ -9,10 +9,6 @@ func g1(ch chan int) {
 	ch <- 42
 }
 
-func g2(ch chan int) {
-	ch <- 43
-}
-
 func TestSelectDefault(t *testing.T) {
 
 	ch1 := make(chan int)
@@ -41,4 +37,31 @@ func TestSelectDefault(t *testing.T) {
 		fmt.Println("The default case!")
 	}
 
+}
+
+func g2(ch chan int) {
+	for true {
+		ch <- 43
+	}
+}
+func TestSelectFor(t *testing.T) {
+
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+
+	go g2(ch1)
+	go g2(ch2)
+
+	cnt1 := 0
+	cnt2 := 0
+
+	for i := 0; i < 40000; i++ {
+		select {
+		case <-ch1:
+			cnt1++
+		case <-ch2:
+			cnt2++
+		}
+	}
+	t.Log(cnt1, cnt2) // 20083 19917
 }

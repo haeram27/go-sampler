@@ -2,42 +2,62 @@ package test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
 )
 
-func BlockingFnB(ctx context.Context, startCh <-chan bool, caller string) {
+func DoSomething1(ctx context.Context) error {
 	for {
 		select {
-		case <-ctx.Done(): // receive context Done channel by invoking CancelFunc()
-			fmt.Printf("%s :: (P)%s: ctx.Done() is called\n", caller, ctx.Value("parentFn"))
+		case <-ctx.Done(): // check cancel event!! receive context Done channel by invoking CancelFunc()!!!
+			fmt.Printf("ctx.Done() is called\n")
 			if err := ctx.Err(); err != nil {
-				fmt.Printf("%s :: err: %s\n", caller, err)
+				fmt.Printf("err: %s\n", err)
+				return err // terminate go-routine
+			} else {
+				return errors.New("canceled") // terminate go-routine
 			}
-			fmt.Printf("%s :: finished\n", caller)
-			return // terminate go-routine
-		case <-startCh:
-			for {
-				// Do something blocking here
-				fmt.Printf("%s is blocking...\n", caller)
-				time.Sleep(1 * time.Second)
-			}
-		default: // check select in every second than nano time in case there is no channel event
-			time.Sleep(1 * time.Second)
+
+		default: // default makes let runtime go out of select scope
+			fmt.Println("default")
 		}
+
+		// Do Something here
+		fmt.Println("out of select")
 	}
 }
 
-func TestCancelBlockingFn(t *testing.T) {
-	baseCtx := context.WithValue(context.Background(), "parentFn", "TestCancelBlockingFn")
-	ctx, cancelCtx := context.WithCancel(baseCtx)
-	startCh := make(chan bool)
-	go BlockingFnB(ctx, startCh, "BlockingFn1") // run go-routine
-	startCh <- true
+func DoSomething2(ctx context.Context) error {
+	// Do Something here
+	fmt.Println("out of select")
 
-	time.Sleep(3 * time.Second)
+	select {
+	case <-ctx.Done(): // check cancel event!! receive context Done channel by invoking CancelFunc()!!!
+		fmt.Printf("ctx.Done() is called\n")
+		if err := ctx.Err(); err != nil {
+			fmt.Printf("err: %s\n", err)
+			return err // terminate go-routine
+		} else {
+			return errors.New("canceled") // terminate go-routine
+		}
+
+	default: // default makes let runtime go out of select scope
+		fmt.Println("default")
+	}
+
+	return nil
+}
+
+func TestDoSomething1(t *testing.T) {
+	baseCtx := context.WithValue(context.Background(), "parentFn", "TestDoSomething1")
+	ctx, cancelCtx := context.WithCancel(baseCtx)
+
+	go DoSomething1(ctx) // run go-routine
+
+	time.Sleep(10 * time.Second)
 	cancelCtx() // send data into ctx.Done() channel immediately
-	time.Sleep(3 * time.Second)
+
 	fmt.Println("TestCancelBlockingFn:: finished")
 }
