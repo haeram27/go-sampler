@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"sync"
@@ -77,33 +78,65 @@ func TestChannelWithGoroutine(t *testing.T) {
 	fmt.Print("TestChannel() finished\n")
 }
 
-func GoRotineRaceInSelect(i1 <-chan int, i2 <-chan int) {
-	fmt.Printf("goroutine() started\n")
-	for {
-		select {
-		case v := <-i1:
-			fmt.Printf("[i1]: %d\n", v)
-			time.Sleep(1 * time.Second)
+func TestChannelRaceInSelect(t *testing.T) {
+	ch1 := make(chan int, 1)
+	ch2 := make(chan int, 1)
+	ctx, cancel := context.WithCancel(context.Background())
 
-		case v := <-i2:
-			fmt.Printf("[i2]: %d\n", v)
-			time.Sleep(1 * time.Second)
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case ch1 <- 1:
+			}
 		}
-		fmt.Printf("goroutine() finished\n")
-		return
-	}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case ch2 <- 1:
+			}
+		}
+	}()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		var ch1sum, ch2sum int
+		for i := 0; i < 1000000; i++ {
+			select {
+			case <-ch1:
+				ch1sum++
+			case <-ch2:
+				ch2sum++
+			}
+		}
+		t.Logf("%d %d\n", ch1sum, ch2sum)
+		wg.Done()
+	}()
+	wg.Wait()
+	cancel()
+	t.Log("TestChannelRaceInSelect() finished\n")
 }
 
-func TestChannelRaceInSelect(t *testing.T) {
-	i1 := make(chan int, 1)
-	i2 := make(chan int, 1)
+func TestChannelClose(t *testing.T) {
+	ch := make(chan int, 3)
+	ch <- 1
+	ch <- 1
+	ch <- 1
+	close(ch)
+	go func() {
+		t.Log("start go\n")
+		for v := range ch {
+			t.Logf("print: %v", v)
+		}
+	}()
 
-	fmt.Print("Channel Input start\n")
-	i1 <- 1
-	i2 <- 2
-	fmt.Print("Channel Input finished\n")
-
-	go GoRotineRaceInSelect(i1, i2) // run go-routine
+	time.Sleep(10 * time.Second)
 
 	fmt.Print("TestChannelRaceInSelect() finished\n")
 }

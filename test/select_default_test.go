@@ -40,10 +40,11 @@ func TestSelectDefault(t *testing.T) {
 }
 
 func g2(ch chan int) {
-	for true {
+	for {
 		ch <- 43
 	}
 }
+
 func TestSelectFor(t *testing.T) {
 
 	ch1 := make(chan int)
@@ -55,7 +56,7 @@ func TestSelectFor(t *testing.T) {
 	cnt1 := 0
 	cnt2 := 0
 
-	for i := 0; i < 40000; i++ {
+	for i := 0; i < 1000000; i++ {
 		select {
 		case <-ch1:
 			cnt1++
@@ -63,5 +64,5 @@ func TestSelectFor(t *testing.T) {
 			cnt2++
 		}
 	}
-	t.Log(cnt1, cnt2) // 20083 19917
+	t.Log(cnt1, cnt2) // 501280 498720
 }

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func DoSomething1(ctx context.Context) error {
+func DoRepeatedJob(ctx context.Context) error {
 	for {
 		select {
 		case <-ctx.Done(): // check cancel event!! receive context Done channel by invoking CancelFunc()!!!
@@ -24,23 +24,37 @@ func DoSomething1(ctx context.Context) error {
 			fmt.Println("default")
 		}
 
-		// Do Something here
-		fmt.Println("out of select")
+		// Do repeated work here
+		fmt.Println("repeat !!!")
 	}
 }
 
-func DoSomething2(ctx context.Context) error {
-	// Do Something here
-	fmt.Println("out of select")
+func TestDoRepeatedJob(t *testing.T) {
+	ctx, cancelCtx := context.WithCancel(context.Background())
+
+	go DoRepeatedJob(ctx) // run go-routine
+
+	time.Sleep(10 * time.Second)
+	cancelCtx() // send data into ctx.Done() channel immediately
+
+	fmt.Println("TestDoRepeatedJob:: finished")
+}
+
+func DoBlockingJob(ctx context.Context) error {
+	// Do blocking job here
+	for i := 0; i < 5; i++ {
+		fmt.Println("blocking !!!")
+		time.Sleep(1 * time.Second)
+	}
 
 	select {
 	case <-ctx.Done(): // check cancel event!! receive context Done channel by invoking CancelFunc()!!!
 		fmt.Printf("ctx.Done() is called\n")
 		if err := ctx.Err(); err != nil {
-			fmt.Printf("err: %s\n", err)
+			fmt.Printf("context is canceled. err: %s\n", err)
 			return err // terminate go-routine
 		} else {
-			return errors.New("canceled") // terminate go-routine
+			return errors.New("context is canceled") // terminate go-routine
 		}
 
 	default: // default makes let runtime go out of select scope
@@ -50,14 +64,13 @@ func DoSomething2(ctx context.Context) error {
 	return nil
 }
 
-func TestDoSomething1(t *testing.T) {
-	baseCtx := context.WithValue(context.Background(), "parentFn", "TestDoSomething1")
-	ctx, cancelCtx := context.WithCancel(baseCtx)
+func TestDoBlockingJob(t *testing.T) {
+	ctx, cancelCtx := context.WithCancel(context.Background())
 
-	go DoSomething1(ctx) // run go-routine
+	go DoBlockingJob(ctx) // run go-routine
 
 	time.Sleep(10 * time.Second)
 	cancelCtx() // send data into ctx.Done() channel immediately
 
-	fmt.Println("TestCancelBlockingFn:: finished")
+	fmt.Println("TestDoBlockingJob:: finished")
 }
