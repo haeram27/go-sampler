@@ -17,7 +17,7 @@ func AVOIDUNUSED(vals ...interface{}) {
 }
 
 // avoid nil error
-func AVONIDNIL(m interface{}) interface{} {
+func AVOIDNIL(m interface{}) interface{} {
 	if m == nil {
 		return ""
 	}
