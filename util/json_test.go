@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	slicehelper "gosampler/util/colection/slice"
 	"testing"
 	"time"
 )
@@ -167,7 +168,7 @@ func TestJsonPathDiff(t *testing.T) {
 
 	// JsonPath's return type is []interface or []interface{}
 	for _, e := range values2 {
-		s = RemoveFromSlice(s, e.(string))
+		s = slicehelper.Remove(s, e.(string))
 	}
 
 	elipsed := time.Since(start)
@@ -185,7 +186,7 @@ func TestJsonPathDiff(t *testing.T) {
 		r2[i] = fmt.Sprint(v)
 	}
 
-	r3 := DiffStrSlice(r1, r2)
+	r3 := slicehelper.RemoveAll(r1, r2)
 
 	elipsed = time.Since(start)
 	t.Log(elipsed, "=============================================================")
