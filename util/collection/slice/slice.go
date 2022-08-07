@@ -28,30 +28,30 @@ Method signatures:
 
 (where T is almost any type)
 
-slicehelper.Unique([]T) []T
-slicehelper.SortedUnique([]T) []T
-slicehelper.Sort([]T) []T
-slicehelper.SortBy([]T, sortFunc func(slice []T, i, j int) bool) []T
-slicehelper.Compare(s1, s2 []T, left, equal, right func(elem T))
-** slicehelper.Remove[T comparable](l []T, v T) []T
-** slicehelper.RemoveAll[T comparable](a, b []T) []T
-slicehelper.Subtract(s1, s2 []T) []T
-slicehelper.Map([]T, func(i int, elem T) T) []T
-slicehelper.Reduce(items []T, initialAccumulator T, f AccumulatorFunc[T]) T
-slicehelper.Index([]T, elem T) int
-slicehelper.SortedIndex([]T, elem T) int
-slicehelper.First([]T) (T, bool)
-slicehelper.Last([]T) (T, bool)
-slicehelper.Select([]T, func(i int, elem T) T) []T
-slicehelper.Contains([]T, elem T) bool
-slicehelper.SortedContains([]T, elem T) bool
-slicehelper.Pop([]T) (T, []T)
-slicehelper.Shift([]T) (T, []T)
-slicehelper.Unshift([]T, elem T) []T
-slicehelper.Find([]T, func(i int, elem T) T) (elem T, found bool)
+slice.Unique([]T) []T
+slice.SortedUnique([]T) []T
+slice.Sort([]T) []T
+slice.SortBy([]T, sortFunc func(slice []T, i, j int) bool) []T
+slice.Compare(s1, s2 []T, left, equal, right func(elem T))
+** slice.Remove[T comparable](l []T, v T) []T
+** slice.RemoveAll[T comparable](a, b []T) []T
+slice.Subtract(s1, s2 []T) []T
+slice.Map([]T, func(i int, elem T) T) []T
+slice.Reduce(items []T, initialAccumulator T, f AccumulatorFunc[T]) T
+slice.Index([]T, elem T) int
+slice.SortedIndex([]T, elem T) int
+slice.First([]T) (T, bool)
+slice.Last([]T) (T, bool)
+slice.Select([]T, func(i int, elem T) T) []T
+slice.Contains([]T, elem T) bool
+slice.SortedContains([]T, elem T) bool
+slice.Pop([]T) (T, []T)
+slice.Shift([]T) (T, []T)
+slice.Unshift([]T, elem T) []T
+slice.Find([]T, func(i int, elem T) T) (elem T, found bool)
 */
 
-package slice
+package slicehelper
 
 import (
 	"fmt"

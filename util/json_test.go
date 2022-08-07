@@ -3,7 +3,8 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	slicehelper "gosampler/util/colection/slice"
+
+	slicehelper "gosampler/util/collection/slice"
 	"testing"
 	"time"
 )

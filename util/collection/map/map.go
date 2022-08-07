@@ -1,4 +1,4 @@
-package maph
+package maphelper
 
 type Map[K comparable, V any] map[K]V
 

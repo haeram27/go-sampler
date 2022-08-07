@@ -1,4 +1,4 @@
-package slice
+package slicehelper
 
 import (
 	"strconv"
