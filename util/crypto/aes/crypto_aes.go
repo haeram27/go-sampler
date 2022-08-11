@@ -42,6 +42,7 @@ func EncryptAES(key []byte, plaintext string) string {
 
 	return hex.EncodeToString(out)
 }
+
 func DecryptAES(key []byte, ct string) string {
 	ciphertext, _ := hex.DecodeString(ct)
 
