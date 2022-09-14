@@ -30,8 +30,10 @@ func TestSelectDefault(t *testing.T) {
 		fmt.Println("Got: ", v2)
 
 	/*
-		select doesn't have blocking function.
-		default case is called when there is no arrived event in above cases.
+		if default block is defined in select block then select block will never block goroutine.
+		if whole above case expression is blocking function
+		then default statement is called because there is no arrived event in above cases.
+		and select statement block is escaped after running default statement block.
 	*/
 	default:
 		fmt.Println("The default case!")
@@ -65,4 +67,40 @@ func TestSelectFor(t *testing.T) {
 		}
 	}
 	t.Log(cnt1, cnt2) // 501280 498720
+}
+
+func TestSelectRace(t *testing.T) {
+	ch1 := make(chan int, 1000)
+	ch2 := make(chan int, 1000)
+
+	// var wg sync.WaitGroup
+	// wg.Add(1)
+	go func() {
+		for i := 0; i < 1000; i++ {
+			if i%2 == 0 {
+				ch2 <- i
+			} else {
+				ch1 <- i
+			}
+		}
+		// wg.Done()
+	}()
+	// wg.Wait()
+
+LOOP:
+	for {
+		select {
+		case v := <-ch1:
+			t.Log("ch1: ", v)
+			if v == 999 {
+				break LOOP
+			}
+		case v := <-ch2:
+			t.Log("ch2: ", v)
+		default:
+			t.Log("default")
+		}
+	}
+
+	t.Log("finish")
 }

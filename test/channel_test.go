@@ -26,6 +26,76 @@ func TestChannelSize(t *testing.T) {
 	t.Log("finish")
 }
 
+func TestChannelPop(t *testing.T) {
+	ch := make(chan int)
+
+	go func() {
+		for i := 0; i < 2; i++ {
+			ch <- i
+			t.Log("send: ", i)
+		}
+		close(ch)
+	}()
+
+	for cnt := 0; cnt < 10; cnt++ {
+		v, ok := <-ch
+		if ok != false {
+			t.Log("recv: ", v, ", ", ok)
+		}
+	}
+
+	t.Log("finish")
+}
+
+func TestChannelPopForRange(t *testing.T) {
+	ch1 := make(chan int, 100)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		for i := 0; i < 140; i++ {
+			ch1 <- i
+			t.Log("send: ", i)
+		}
+		close(ch1)
+	}()
+
+	for v := range ch1 {
+		t.Log("recv: ", v)
+	}
+
+	t.Log("finish")
+}
+
+func TestChannelForSelect(t *testing.T) {
+	ch1 := make(chan int, 10)
+	ch2 := make(chan int, 10)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		for i := 0; i < 10; i++ {
+			ch1 <- i
+		}
+		wg.Done()
+	}()
+	wg.Wait()
+
+Loop:
+	for {
+		select {
+		case val := <-ch1:
+			t.Log(val)
+			if val == 3 {
+				break Loop
+			}
+		case <-ch2:
+		}
+	}
+
+	t.Log("finish")
+}
+
 func TestChannelRangeAndHidenSize(t *testing.T) {
 
 	// channel can be store cap+1 size of date
