@@ -10,14 +10,14 @@ import (
 )
 
 // avoid "not used" error
-func AVOIDUNUSED(vals ...interface{}) {
+func AVOIDUNUSED(vals ...any) {
 	for _, val := range vals {
 		_ = val
 	}
 }
 
 // avoid nil error
-func AVOIDNIL(m interface{}) interface{} {
+func AVOIDNIL(m any) any {
 	if m == nil {
 		return ""
 	}
@@ -25,7 +25,7 @@ func AVOIDNIL(m interface{}) interface{} {
 }
 
 // if then else
-func IfThenElse(condition bool, a interface{}, b interface{}) interface{} {
+func IfThenElse(condition bool, a any, b any) any {
 	if condition {
 		return a
 	}

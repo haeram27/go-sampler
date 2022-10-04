@@ -12,8 +12,8 @@ func TestCheckTypeOfVariable(t *testing.T) {
 
 	fmt.Printf("%T\n", varString) // string
 
-	// reflect.TypeOf() returns reflect.Type of interface represent go types
-	// reflect.TypeOf().Kind() returns reflect.Kind of const int of type
+	// reflect.TypeOf() returns "reflect.Type" of interface represent go types
+	// reflect.TypeOf().Kind() returns "reflect.Kind" of const int of type
 
 	if reflect.TypeOf(varString).Kind() == reflect.String {
 		fmt.Println("Equal")                                   // Equal

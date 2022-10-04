@@ -21,7 +21,7 @@ func CmdExitCode(err error) (bool, ErrExitCode) {
 	return false, ErrExitCode{}
 }
 
-// use (*exec.Cmd).StdoutPipeto resolve multiline result
+// use (*exec.Cmd).StdoutPipe() to resolve multiline result
 func CmdStdoutPipe(cmd *exec.Cmd) (string, error) {
 	out, err := cmd.StdoutPipe()
 	if err != nil {
