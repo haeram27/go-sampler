@@ -81,3 +81,40 @@ func TestDeepEqual(t *testing.T) {
 	t.Log(reflect.DeepEqual(map_4, map_4)) // true
 	t.Log(reflect.DeepEqual(map_2, map_4)) // false
 }
+
+const (
+	OONE = iota
+	TTWO
+)
+
+type intSlice []int
+type Int int
+
+func (x intSlice) Len() int { return len(x) }
+func (x Int) Value() int    { return int(x) }
+
+func TestReceiverMethod(t *testing.T) {
+	i := []int{1, 2, 3, 4}
+	t.Log(intSlice(i).Len())                    // 4
+	t.Log(reflect.TypeOf(intSlice(i)).Name())   // intSlice
+	t.Log(reflect.TypeOf(intSlice(i)).String()) // test.intSlice
+	t.Log(reflect.TypeOf(intSlice(i)).Kind())   // slice
+
+	j := 100
+	t.Log(Int(j).Value())                  // 100
+	t.Log(reflect.TypeOf(Int(j)).Name())   // Int
+	t.Log(reflect.TypeOf(Int(j)).String()) // test.Int
+	t.Log(reflect.TypeOf(Int(j)).Kind())   // int
+
+	slice3 := make([]int, 10, 20)          // s3 := new([20]int)[10:20]
+	t.Log(slice3)                          // [0 0 0 0 0 0 0 0 0 0]
+	t.Log(reflect.TypeOf(slice3).Name())   // <blank>
+	t.Log(reflect.TypeOf(slice3).String()) // []int
+	t.Log(reflect.TypeOf(slice3).Kind())   // slice
+
+	slice4 := new([20]int)[10:20]
+	t.Log(slice4)                          // [0 0 0 0 0 0 0 0 0 0]
+	t.Log(reflect.TypeOf(slice3).Name())   // <blank>
+	t.Log(reflect.TypeOf(slice3).String()) // []int
+	t.Log(reflect.TypeOf(slice4).Kind())   // slice
+}
