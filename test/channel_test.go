@@ -10,7 +10,7 @@ import (
 )
 
 func TestChannelSize(t *testing.T) {
-	ch := make(chan int, 0)
+	ch := make(chan int)
 	t.Log(cap(ch)) // 0
 	t.Log(len(ch)) // 0
 

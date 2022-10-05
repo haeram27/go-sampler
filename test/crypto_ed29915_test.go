@@ -8,7 +8,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 // Asymmetric Key - ED29915
@@ -90,7 +90,7 @@ func (e *ECDSAHelper) PrivateKeyToFile(fname string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fname, enc, 0644)
+	err = os.WriteFile(fname, enc, 0644)
 
 	if err != nil {
 		return err
@@ -106,7 +106,7 @@ func (e *ECDSAHelper) PrivateKeyFromFile(fname string) error {
 		e.PrivateKey = nil
 	}
 
-	buf, err := ioutil.ReadFile(fname)
+	buf, err := os.ReadFile(fname)
 
 	if err != nil {
 		return err
@@ -173,7 +173,7 @@ func (e *ECDSAHelper) PublicKeyToFile(fname string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fname, enc, 0644)
+	err = os.WriteFile(fname, enc, 0644)
 
 	if err != nil {
 		return err
@@ -189,7 +189,7 @@ func (e *ECDSAHelper) PublicKeyFromFile(fname string) error {
 		e.PrivateKey = nil
 	}
 
-	buf, err := ioutil.ReadFile(fname)
+	buf, err := os.ReadFile(fname)
 
 	if err != nil {
 		return err

@@ -26,8 +26,7 @@ func TestCheckTypeOfVariable(t *testing.T) {
 		fmt.Println("Equal") // Equal
 	}
 
-	var itf interface{}
-	itf = varString
+	var itf any = varString
 	switch t := itf.(type) {
 	case string:
 		fmt.Println("string") // string

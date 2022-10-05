@@ -1,6 +1,9 @@
 package test
 
-import "testing"
+import (
+	"gosampler/util"
+	"testing"
+)
 
 func TestMap(t *testing.T) {
 	m := make(map[int]struct{})
@@ -14,6 +17,7 @@ func TestMap(t *testing.T) {
 	keys := make([]int, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
+		util.AVOIDUNUSED(keys)
 	}
 
 	for k := range m {
