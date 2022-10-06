@@ -58,7 +58,7 @@ func TestDefautValueOfTyep(t *testing.T) {
 	t.Log("chan: ", w)                   // map[]
 }
 
-func TestNilTyep(t *testing.T) {
+func TestNilType(t *testing.T) {
 	// nil can be pointer, slice, map, channel, func, empty interface
 	// https://go101.org/article/nil.html
 
