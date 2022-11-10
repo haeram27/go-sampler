@@ -23,5 +23,4 @@ func TestMap(t *testing.T) {
 	for k := range m {
 		delete(m, k)
 	}
-
 }
