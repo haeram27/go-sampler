@@ -11,12 +11,16 @@ func TestGoCapture(t *testing.T) {
 	varOutter := "ref"                       // new instance
 	fmt.Printf("original: %v\n", &varOutter) // original: 0xc00006b030
 
+	var wg sync.WaitGroup
 	print := func(name string) {
 		fmt.Printf("%s: %v\n", name, &varOutter) // accessed as reference
+		wg.Done()
 	}
 
+	wg.Add(2)
 	go print("1") // 1: 0xc00006b030
 	go print("2") // 2: 0xc00006b030
+	wg.Wait()
 }
 
 func TestGoCapture2(t *testing.T) {
