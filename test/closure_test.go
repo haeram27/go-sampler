@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+/**
+In Go lang, basically closure is accessed as reference unless closure variable is NOT redeclared.
+**/
+
 func TestGoCapture(t *testing.T) {
 	varOutter := "ref"                       // new instance
 	fmt.Printf("original: %v\n", &varOutter) // original: 0xc00006b030
